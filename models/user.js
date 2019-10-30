@@ -1,7 +1,8 @@
-const mongoose =require('mongoose');
-const crypto =require("crypto");
+const mongoose = require("mongoose");
+const crypto = require("crypto");
 const uuidv1 =require("uuid/v1");
-const userShema =new mongoose.Schema({
+const userShema =new mongoose.Schema(
+    {
     username:{
         type:String,
         trim:true,
@@ -9,12 +10,11 @@ const userShema =new mongoose.Schema({
         minlength:2,
         maxlength:32
     },
-    
     email:{
-        type:String,
-        trim:true,
-        required:true,
-        unique:32
+        type: String,
+        trim: true,
+        required: true,
+        unique: true
     },
     hashed_password:{
         type:String,
@@ -30,8 +30,6 @@ const userShema =new mongoose.Schema({
     middlename:{
         type:String,
         trim:true,
-        required:false,
-        minlength:2,
         maxlength:32,
         default:''
     },
@@ -41,6 +39,21 @@ const userShema =new mongoose.Schema({
         required:true,
         minlength:2,
         maxlength:32
+    },
+    address:{
+        type:String,
+    },
+    address:{
+        type:String,
+    },
+    passcode:{
+        type:Number,
+    },
+    phone:{
+       type:Number,
+        trim:true,
+   //    minlength:9,
+     //   maxlength:10
     },
     about:{
         type:String,
@@ -57,28 +70,35 @@ const userShema =new mongoose.Schema({
         default:[]
     }
 
-},{timestamps:true})
+},
+{timestamps:true}
+);
 
 //virtual field
-userShema.virtual('password')
-.set(function(password){
-    this._password =password
-    this.salt=uuidv1()
-    this.hashed_password=this.encryptPassword(password)
-})
+userShema
+    .virtual('password')
+    .set(function(password){
+        this._password =password;
+        this.salt=uuidv1();
+        this.hashed_password = this.encryptPassword(password);
+    })
 .get(function(){
-    return this.password
-})
+    return this._password
+});
 
-userShema.method ={
-    encryptPassword=function(password){
-        if(!password) return '';
-        try{
+userShema.methods ={
+    authenticate: function(plainText) {
+        return this.encryptPassword(plainText) === this.hashed_password;
+    },
+
+    encryptPassword: function(password) {
+        if (!password) return "";
+        try {
             return crypto
-            .createHmac("sha1",this.salt)
-            .update(password)
-            .digest("hex");
-        } catch (err){
+                .createHmac("sha1", this.salt)
+                .update(password)
+                .digest("hex");
+        } catch (err) {
             return "";
         }
     }
