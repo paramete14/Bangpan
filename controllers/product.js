@@ -60,15 +60,16 @@ exports.create = (req, res) => {
         }
         if (files.photo) {
             //console.log('FILE PHOTO',files.photo);
+            if(files.photo.size>5000000){
+                //5mb=5,000,000
+                return res.status(400).json({
+                    error: "Image size sould  be less than 5mb"
+            });
+        }
             product.photo.data = fs.readFileSync(files.photo.path);
             product.photo.contentType = files.photo.type;
         }
-        if(files.photo.size>5000000){
-            //5mb=5,000,000
-            return res.status(400).json({
-                error: "Image size sould  be less than 5mb"
-            });
-        }
+
         product.save((err, result) => {
             if (err) {
                 return res.status(400).json({
@@ -89,29 +90,30 @@ exports.update = (req, res) => {
                 error: "Image could not be uploaded"
             });
         }
-        let product = req.product;
         const {
             name,
             description,
             category
         } = fields;
-        product =_.extend(product,fields);
-        
         if(!name||!description||!category){
             return res.status(400).json({
                 error: "All field require"
             });
         }
+        let product = req.product;
+        product =_.extend(product,fields);
+        
+
         if (files.photo) {
             //console.log('FILE PHOTO',files.photo);
+            if(files.photo.size>5000000){
+                //5mb=5,000,000
+                return res.status(400).json({
+                    error: "Image size sould  be less than 5mb"
+            });
+        }
             product.photo.data = fs.readFileSync(files.photo.path);
             product.photo.contentType = files.photo.type;
-        }
-        if(files.photo.size>5000000){
-            //5mb=5,000,000
-            return res.status(400).json({
-                error: "Image size sould  be less than 5mb"
-            });
         }
         product.save((err, result) => {
             if (err) {

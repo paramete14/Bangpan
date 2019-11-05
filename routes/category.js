@@ -5,7 +5,7 @@ const {
     isAuth,
     isAdmin
 } = require("../controllers/auth");
-const { create ,categoryById,read,remove,update} = require("../controllers/category");
+const { create ,categoryById,read,remove,update,list} = require("../controllers/category");
 const { userById } = require("../controllers/user");
 
 router.post(
@@ -14,8 +14,10 @@ router.post(
     isAuth,
     create
     );
+router.get("/categories", list);
+
 router.get("/category/:categoryId", read);
-router.put(
+router.post(
     "/category/:categoryId/:userId", 
     reqSignin ,
     isAuth,

@@ -29,60 +29,45 @@ exports.read = (req, res) => {
 };
 
 exports.remove = (req, res) => {
-    let product =req.product;
-    product.remove((err,deleteProduct)=>{
+    const category =req.category;
+    category.remove((err,deleteCategory)=>{
         if (err) {
             return res.status(400).json({
                 error: errorHandler(err)
             });
         } 
         res.json({
-            deleteProduct,
-            message:"product delete successfully"
+            deleteCategory,
+            message:"Category delete successfully"
         });
     });
 };
 
 exports.update = (req, res) => {
-    let form = new formidable.IncomingForm();
-    form.keepExtensions = true;
-    form.parse(req, (err, fields, files) => {
-        if (err) {
-            return res.status(400).json({
-                error: "Image could not be uploaded"
-            });
-        }
-        let product = req.product;
-        const {
-            name,
-            description,
-            category
-        } = fields;
-        product =_.extend(product,fields);
-        
-        if(!name||!description||!category){
-            return res.status(400).json({
-                error: "All field require"
-            });
-        }
-        if (files.photo) {
-            //console.log('FILE PHOTO',files.photo);
-            product.photo.data = fs.readFileSync(files.photo.path);
-            product.photo.contentType = files.photo.type;
-        }
-        if(files.photo.size>5000000){
-            //5mb=5,000,000
-            return res.status(400).json({
-                error: "Image size sould  be less than 5mb"
-            });
-        }
-        product.save((err, result) => {
+    const category = req.category;
+    category.name = req.body.name;
+
+        category.save((err, result) => {
             if (err) {
                 return res.status(400).json({
                     error: errorHandler(err)
                 });
             }
-            res.json(result);
+            res.json(                {message:"update category success"}
+            );
         });
+   
+};
+
+exports.list = (req, res) => {
+    Category.find().exec((err,result)=>{
+        if (err) {
+            return res.status(400).json({
+                error: errorHandler(err)
+            });
+        }
+        res.json(
+            result
+        );
     });
 };
