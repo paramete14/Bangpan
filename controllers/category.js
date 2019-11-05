@@ -29,16 +29,16 @@ exports.read = (req, res) => {
 };
 
 exports.remove = (req, res) => {
-    let product =req.product;
-    product.remove((err,deleteProduct)=>{
+    let category =req.category;
+    category.remove((err,deleteCategory)=>{
         if (err) {
             return res.status(400).json({
                 error: errorHandler(err)
             });
         } 
         res.json({
-            deleteProduct,
-            message:"product delete successfully"
+            deleteCategory,
+            message:"Category delete successfully"
         });
     });
 };
