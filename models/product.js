@@ -18,6 +18,11 @@ const productSchema = new mongoose.Schema(
             trim:true,
             default:0
         },
+        amount: {
+            type:Number,
+            trim:true,
+            default:0
+        },
         category:{
             type:ObjectId,
             ref:"category",
